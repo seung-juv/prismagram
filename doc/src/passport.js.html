@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>passport.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../";
+    var thisFile = "src/passport.js";
+    var defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container">
+    <div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+    
+      <tr>
+        <td class="docs">
+          <h1>passport.js</h1>
+        </td>
+        <td class="code highlight"></td>
+      </tr>
+    
+    
+      <tr>
+        <td class="docs">
+          <div class="pilwrap">
+  <a class="pilcrow" href="#section-1" id="section-1"></a>
+</div>
+
+        </td>
+        <td class="code highlight">
+          <pre class="javascript"><span class="hljs-keyword">import</span> passport <span class="hljs-keyword">from</span> <span class="hljs-string">"passport"</span>;
+<span class="hljs-keyword">import</span> { Strategy, ExtractJwt } <span class="hljs-keyword">from</span> <span class="hljs-string">"passport-jwt"</span>;
+<span class="hljs-keyword">import</span> { prisma } <span class="hljs-keyword">from</span> <span class="hljs-string">"../generated/prisma-client"</span>;
+
+<span class="hljs-keyword">const</span> jwtOptions = {
+  <span class="hljs-attr">jwtFromRequest</span>: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  <span class="hljs-attr">secretOrKey</span>: process.env.JWT_SECRET
+};
+
+<span class="hljs-keyword">const</span> verifyUser = <span class="hljs-keyword">async</span> (payload, done) =&gt; {
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> prisma.user({ <span class="hljs-attr">id</span>: payload.id });
+    <span class="hljs-keyword">if</span> (user !== <span class="hljs-literal">null</span>) {
+      <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, user);
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">return</span> done(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>);
+    }
+  } <span class="hljs-keyword">catch</span> (error) {
+    <span class="hljs-keyword">return</span> done(error, <span class="hljs-literal">false</span>);
+  }
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> authenticateJwt = <span class="hljs-function">(<span class="hljs-params">req, res, next</span>) =&gt;</span>
+  passport.authenticate(<span class="hljs-string">"jwt"</span>, { <span class="hljs-attr">sessions</span>: <span class="hljs-literal">false</span> }, (error, user) =&gt; {
+    <span class="hljs-keyword">if</span> (user) {
+      req.user = user;
+    }
+    next();
+  })(req, res, next);
+
+passport.use(<span class="hljs-keyword">new</span> Strategy(jwtOptions, verifyUser));
+passport.initialize();
+
+</pre>
+        </td>
+      </tr>
+    
+  </tbody>
+</table>
+
+  </div>
+</body>
+</html>
