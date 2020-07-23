@@ -7,6 +7,9 @@ const allResolvers = fileLoader(path.join(__dirname, "/api/**/*.js"));
 
 const schema = makeExecutableSchema({
   typeDefs: mergeTypes(allTypes),
+  options: {
+    static: "upload"
+  },
   resolvers: mergeResolvers(allResolvers)
 });
 

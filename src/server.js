@@ -1,5 +1,6 @@
 import "./env";
 import { GraphQLServer } from "graphql-yoga";
+import express from "express";
 import logger from "morgan";
 import schema from "./schema";
 import "./passport";
@@ -16,6 +17,7 @@ const server = new GraphQLServer({
 
 server.express.use(logger("dev"));
 server.express.use(authenticateJwt);
+server.express.use("/upload", express.static("upload"));
 server.express.post("/api/upload", uploadMiddleware, uploadController);
 
 server.start(
